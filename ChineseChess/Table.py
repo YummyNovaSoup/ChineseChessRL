@@ -84,9 +84,9 @@ class Table:
         piece = self.table[arg[0]][arg[1]]
         if piece == 0:
             return canGo
-        elif piece == 1 | piece == -1:
+        elif piece == 1 or piece == -1:
             #first = 0
-            for i in range(0,arg[0],reversed=True):
+            for i in reversed(range(0,arg[0])):
                 if self.table[i][arg[1]] == 0: #空位可以走
                     canGo.append((i,arg[1]))
                 elif piece*self.table[i][arg[1]]<0:   #可以吃                
@@ -94,7 +94,7 @@ class Table:
                     break
                 else:
                     break
-            for i in range(arg[0]+1,self.length-1):
+            for i in range(arg[0]+1,self.length):
                 if self.table[i][arg[1]] == 0:
                     canGo.append((i,arg[1]))
                 elif piece*self.table[i][arg[1]]<0:   #可以吃                
@@ -102,7 +102,7 @@ class Table:
                     break
                 else:
                     break
-            for j in range(0,arg[1],reversed=True):
+            for j in reversed(range(0,arg[1])):
                 if self.table[arg[0]][j] == 0:
                     canGo.append((arg[0],j))
                 elif piece*self.table[arg[0]][j]<0:
@@ -110,7 +110,7 @@ class Table:
                     break
                 else:
                     break
-            for j in range(arg[1]+1,self.width-1):
+            for j in range(arg[1]+1,self.width):
                 if self.table[arg[0]][j] == 0:
                     canGo.append((arg[0],j))
                 elif piece*self.table[arg[0]][j]<0:
@@ -119,61 +119,165 @@ class Table:
                 else:
                     break
             return canGo
-        elif piece==2 | piece==-2:#马
+        elif piece==2 or piece==-2:#马
 
             # for i in [-1,1,-2,2]:
             #     for j in [-1,1,-2,2]:
             #         if (abs)
             canGo = [(arg[0]-2,arg[1]-1),(arg[0]-2,arg[1]+1),(arg[0]-1,arg[1]-2),(arg[0]-1,arg[1]+2)
                      ,(arg[0]+1,arg[1]-2),(arg[0]+1,arg[1]+2),(arg[0]+2,arg[1]-1),(arg[0]+2,arg[1]+1)]
-            for i,j in canGo:
-                if i<0 | i>=self.length | j<0 | j>=self.width:
+            for i,j in canGo.copy():
+                if i<0 or i>=self.length or j<0 or j>=self.width:
                     canGo.remove((i,j))
-                elif abs(i-arg[0])==2  & self.table[arg[0]+int((i-arg[0])/2),arg[1]]!=0:
+                elif abs(i-arg[0])==2  and self.table[arg[0]+int((i-arg[0])/2)][arg[1]]!=0:
                     #蹩马腿
                     canGo.remove((i,j))
-                elif abs(j-arg[1])==2  & self.table[arg[0],arg[1]+int((j-arg[1])/2)]!=0:
+                elif abs(j-arg[1])==2  and self.table[arg[0]][arg[1]+int((j-arg[1])/2)]!=0:
                     canGo.remove((i,j))
                 elif piece*self.table[i][j]>0:
                     canGo.remove((i,j))
                     
             return canGo
-        elif piece==3 | piece ==-3:#象
+        elif piece==3 or piece ==-3:#象
             canGo = [(arg[0]-2,arg[1]-2),(arg[0]-2,arg[1]+2),(arg[0]+2,arg[1]-2),(arg[0]+2,arg[1]+2)]
             south = arg[0]<=4 #反了，但没关系
-            for i,j in canGo:
+            for i,j in canGo.copy():
                 if south == 1:
-                    if  i<0 | i>=5 | j<0 | j>=self.width:#南方阵营
+                    if  i<0 or i>=5 or j<0 or j>=self.width:#南方阵营
                         canGo.remove((i,j))
                     elif piece*self.table[i][j]>0:
+                        canGo.remove((i,j))
+                    elif self.table[int((arg[0]+i)/2)][int((arg[1]+j)/2)]: #堵象眼了
                         canGo.remove((i,j))
                 else:
-                    if  i<5 | i>=self.length | j<0 | j>=self.width:#北方阵营
+                    if  i<5 or i>=self.length or j<0 or j>=self.width:#北方阵营
                         canGo.remove((i,j))
                     elif piece*self.table[i][j]>0:
                         canGo.remove((i,j))
+                    elif self.table[int((arg[0]+i)/2)][int((arg[1]+j)/2)]: #堵象眼了
+                        canGo.remove((i,j))    
                 
             return canGo
-        elif piece==4 | piece==-4:
+        elif piece==4 or piece==-4:
             canGo = [(arg[0]-1,arg[1]-1),(arg[0]-1,arg[1]+1),(arg[0]+1,arg[1]-1),(arg[0]+1,arg[1]+1)]
             south = arg[0]<=4 #反了，但没关系
-            for i,j in canGo:
+            for i,j in canGo.copy():
                 if south == 1:
-                    if  i<0 | i>2 | j<3 | j>5:#南方阵营
+                    if  i<0 or i>2 or j<3 or j>5:#南方阵营
                         canGo.remove((i,j))
                     elif piece*self.table[i][j]>0:
                         canGo.remove((i,j))
                 else:
-                    if  i<7 | i>9 | j<3 | j>5:#北方阵营
+                    if  i<7 or i>9 or j<3 or j>5:#北方阵营
                         canGo.remove((i,j))
                     elif piece*self.table[i][j]>0:
                         canGo.remove((i,j))
                 
             return canGo
-        elif piece==5 | piece==-5:
+        elif piece==5 or piece==-5:
             canGo = [(arg[0]-1,arg[1]),(arg[0],arg[1]+1),(arg[0]+1,arg[1]),(arg[0],arg[1]-1)]
-            
+            south = arg[0]<=4 #反了，但没关系, 看成小i
+            for i,j in canGo.copy():
+                if south == 1:
+                    if  i<0 or i>2 or j<3 or j>5:#南方阵营
+                        canGo.remove((i,j))
+                    elif piece*self.table[i][j]>0:
+                        canGo.remove((i,j))
+                else:
+                    if  i<7 or i>9 or j<3 or j>5:#北方阵营
+                        canGo.remove((i,j))
+                    elif piece*self.table[i][j]>0:
+                        canGo.remove((i,j))
+            return canGo
+        elif piece==6 or piece==-6: #炮
+            flag = 0 #待发标志
+            for i in reversed(range(0,arg[0])):
+                if self.table[i][arg[1]]==0 : #空位可以走
+                    if flag==0:
+                        canGo.append((i,arg[1]))
+                    else:
+                        pass
+                else:
+                    if flag == 1 :
+                        if piece*self.table[i][arg[1]]<0: 
+                            canGo.append((i,arg[1]))
+                        else:
+                            pass
+                        break
+                    else:
+                        flag = 1
 
+            flag = 0
+            for i in range(arg[0]+1,self.length):
+                if self.table[i][arg[1]]==0 : #空位可以走
+                    if flag==0:
+                        canGo.append((i,arg[1]))
+                    else:
+                        pass
+                else:
+                    if flag == 1 :
+                        if piece*self.table[i][arg[1]]<0: 
+                            canGo.append((i,arg[1]))
+                        else:
+                            pass
+                        break
+                    else:
+                        flag = 1
+            flag = 0
+            for j in reversed(range(0,arg[1])):
+                if self.table[arg[0]][j] == 0:
+                    if flag==0:
+                        canGo.append((arg[0],j))
+                    else:
+                        pass
+                else:
+                    if flag == 1 :
+                        if piece*self.table[arg[0]][j]<0: 
+                            canGo.append((arg[0],j))
+                        else:
+                            pass
+                        break
+                    else:
+                        flag = 1
+            flag = 0
+            for j in range(arg[1]+1,self.width):
+                if self.table[arg[0]][j] == 0:
+                    if flag==0:
+                        canGo.append((arg[0],j))
+                    else:
+                        pass
+                else:
+                    if flag == 1 :
+                        if piece*self.table[arg[0]][j]<0: 
+                            canGo.append((arg[0],j))
+                        else:
+                            pass
+                        break
+                    else:
+                        flag = 1
+            return canGo
+
+        elif piece==7 or piece==-7: #卒
+            
+            i,j = self.findLoc(int(piece/7*(abs(piece)-2))) #找老将位置
+            if i<=4: #北方阵营，这回对了
+                if arg[0]>=5: #过河了
+                    canGo = [(arg[0]+1,arg[1]),(arg[0],arg[1]-1),(arg[0],arg[1]+1)]
+                else: #没过河
+                    canGo = [(arg[0]+1,arg[1])] #塔塔开
+            else:#南方阵营
+                if arg[0]<=4: #过河了
+                    canGo = [(arg[0]-1,arg[1]),(arg[0],arg[1]-1),(arg[0],arg[1]+1)]
+                else: #没过河
+                    canGo = [(arg[0]-1,arg[1])] #塔塔开
+            for i,j in canGo.copy():
+                if i<0 or i>=self.length or j<0 or j>=self.width: #不出界
+                    canGo.remove((i,j))
+                elif piece*self.table[i][j]>0: #不吃队友
+                    canGo.remove((i,j))
+            return canGo
+        else:
+            return f"findLocPieceError"
 
     def go(self, arg: tuple, loc_togo: tuple):
         try:
@@ -194,18 +298,19 @@ class Table:
         bjiang = 5
         rjiang = -5
         #后面findLoc可以优化，直接作为变量
-        if not self.whereCanGo(self.findLoc(bjiang)): #如果黑将可走是空集
-            return 1
-        elif not self.whereCanGo(self.findLoc(rjiang)): #红
+        if self.findLoc(bjiang)==None:
             return -1
+        elif self.findLoc(rjiang)==None:
+            return 1
         else:
             return 0
 
-table1 = Table()
-table1.place((0,0,1),(0,1,2),(3,2,5),(5,5,"rju"))
-table1.show()
-table1.clear()
-table1.initial(1)
-table1.show()
-table1.go((0,0,-1),(1,0))
-table1.show()
+# table1 = Table()
+# table1.place((0,0,1),(0,1,2),(3,2,5),(5,5,"rju"))
+# table1.show()
+# table1.clear()
+# table1.initial(1)
+# table1.show()
+# table1.go((0,0,-1),(1,0))
+# table1.show()
+# table1.whereCanGo((0,1,-2))
