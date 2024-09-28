@@ -353,10 +353,11 @@ class Table:
                                 self.waitj = j
                                 self.waittingtogo = 1
                 else:
-                    
+                    flag = 0
                     for i in range(10):
                         for j in range(9):
                             self.allCollision[i][j] = self.ifCollision(self.allCircleCenter[i][j],self.radius,mouse_pos)
+                            flag = flag + self.allCollision[i][j]
                             if self.allCollision[i][j]>0:
                                 if (i,j) in self.whereCanGo((self.waiti,self.waitj)):
                                     self.go((self.waiti,self.waitj,self.table[self.waiti][self.waitj]),(i,j))
@@ -366,6 +367,9 @@ class Table:
                                 else:
                                     self.allCollision[i][j]=0
                                     self.waittingtogo = 0
+                    if flag==0:
+                        #一个都没有
+                        self.waittingtogo = 0
         # 填充背景颜色
         screen.fill((255, 255, 255))  # 白色背景
 
