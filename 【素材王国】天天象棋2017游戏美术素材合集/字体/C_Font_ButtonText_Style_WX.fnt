@@ -1,0 +1,18 @@
+info face="C_Font_ButtonText_Style_WX" size=32 bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1
+common lineHeight=34 base=26 scaleW=256 scaleH=128 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="C_Font_ButtonText_Style_WX.png"
+chars count=12
+char id=24494 x=96 y=67 width=46 height=33 xoffset=0 yoffset=1 xadvance=47 page=0 chnl=0 letter="微"
+char id=20449 x=0 y=0 width=48 height=33 xoffset=0 yoffset=1 xadvance=49 page=0 chnl=0 letter="信"
+char id=30331 x=96 y=33 width=47 height=33 xoffset=0 yoffset=1 xadvance=48 page=0 chnl=0 letter="登"
+char id=24405 x=48 y=68 width=47 height=34 xoffset=0 yoffset=1 xadvance=48 page=0 chnl=0 letter="录"
+char id=22909 x=49 y=0 width=47 height=32 xoffset=0 yoffset=2 xadvance=48 page=0 chnl=0 letter="好"
+char id=21451 x=48 y=34 width=47 height=33 xoffset=0 yoffset=1 xadvance=48 page=0 chnl=0 letter="友"
+char id=26379 x=143 y=67 width=42 height=33 xoffset=0 yoffset=2 xadvance=43 page=0 chnl=0 letter="朋"
+char id=22280 x=144 y=0 width=39 height=33 xoffset=0 yoffset=1 xadvance=40 page=0 chnl=0 letter="圈"
+char id=36992 x=0 y=69 width=47 height=35 xoffset=0 yoffset=0 xadvance=48 page=0 chnl=0 letter="邀"
+char id=35831 x=0 y=34 width=47 height=34 xoffset=0 yoffset=1 xadvance=48 page=0 chnl=0 letter="请"
+char id=32 x=0 y=0 width=0 height=0 xoffset=0 yoffset=0 xadvance=2 page=0 chnl=0 letter=" "
+char id=9 x=0 y=0 width=0 height=0 xoffset=0 yoffset=0 xadvance=16 page=0 chnl=0 letter="	"
+
+kernings count=0
