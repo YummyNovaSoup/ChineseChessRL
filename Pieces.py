@@ -1,14 +1,18 @@
 import os
 import pygame
 
-abs_path = os.path.abspath(__file__)
-parent_dir = os.path.dirname(abs_path)
-ui_path = os.path.join(parent_dir,'UI')
-chessboard_path = os.path.join(ui_path,'ChessBoard.png')
-pieces_path = os.path.join(ui_path,'pieces')
+# abs_path = os.path.abspath(__file__)
+# parent_dir = os.path.dirname(abs_path)
+# ui_path = os.path.join(parent_dir,'UI')
+# chessboard_path = os.path.join(ui_path,'ChessBoard.png')
+# pieces_path = os.path.join(ui_path,'pieces')
+# kind2path = {1:"ju_black",-1:"ju_red",2:"ma_black",-2:"ma_red",3:"xiang_black",-3:"xiang_red",4:"shi_black",-4:"shi_red"
+#              ,5:"jiang_black",-5:"shuai_red",6:"pao_black",-6:"pao_red",7:"zu_black",-7:"bing_red"}
+
+chessboard_path = os.path.join('UI','ChessBoard.png')
+pieces_path = os.path.join('UI','pieces')
 kind2path = {1:"ju_black",-1:"ju_red",2:"ma_black",-2:"ma_red",3:"xiang_black",-3:"xiang_red",4:"shi_black",-4:"shi_red"
              ,5:"jiang_black",-5:"shuai_red",6:"pao_black",-6:"pao_red",7:"zu_black",-7:"bing_red"}
-
 zeroplace = (130,80)
 radius=25
 allCircleCenter = [ [(zeroplace[0]+i*67,zeroplace[1]+j*67) for j in range(10)] for i in range(9)]

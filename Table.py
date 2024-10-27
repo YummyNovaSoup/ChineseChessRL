@@ -32,6 +32,7 @@ class Table:
         self.waitj = 0
         self.color = 1
         self.whowin = 0
+        self.record = []
 
     def initial(self,color=1):
         #黑是1，红是-1
@@ -203,6 +204,7 @@ class Table:
         elif piece==5 or piece==-5:
             canGo = [(arg[0]-1,arg[1]),(arg[0],arg[1]+1),(arg[0]+1,arg[1]),(arg[0],arg[1]-1)]
             south = arg[0]<=4 #反了，但没关系, 看成小i
+            
             for i,j in canGo.copy():
                 if south == 1:
                     if  i<0 or i>2 or j<3 or j>5:#南方阵营
@@ -214,6 +216,19 @@ class Table:
                         canGo.remove((i,j))
                     elif piece*self.table[i][j]>0:
                         canGo.remove((i,j))
+            #检查是否对将
+            if south == 1:
+                for i in range(arg[0]+1,self.length):
+                    if self.table[i][arg[1]]!=0:
+                        if self.table[i][arg[1]]==-1*piece:
+                            canGo.append((i,arg[1]))
+                        break
+            else:
+                for i in reversed(range(0,arg[0])):
+                    if self.table[i][arg[1]]!=0:
+                        if self.table[i][arg[1]]==-1*piece:
+                            canGo.append((i,arg[1]))
+                        break
             return canGo
         elif piece==6 or piece==-6: #炮
             flag = 0 #待发标志
@@ -305,20 +320,50 @@ class Table:
         else:
             return f"findLocPieceError"
 
+    def AllCanGo(self):
+        allCanGo = []
+        for i in range(self.length):
+            for j in range(self.width):
+                if self.table[i][j]*self.turn>0:
+                    pieceCanGo = self.whereCanGo((i,j))
+                    if pieceCanGo!=[]:
+                        allCanGo.append((i,j,self.table[i][j],pieceCanGo))
+        return allCanGo
+    
+    def examineCanGo(self,loc:tuple, loc_togo:tuple):
+        return loc_togo in self.whereCanGo(loc)
+
+
     def go(self, arg: tuple, loc_togo: tuple):
+        #传入loc+piece,loc_togo
         try:
-            assert self.table[arg[0]][arg[1]] == arg[2], "pieceError" #棋子不对
+            piece = self.table[arg[0]][arg[1]]
+            #assert self.table[arg[0]][arg[1]] == arg[2], "pieceError" #棋子不对
             assert loc_togo in self.whereCanGo((arg[0],arg[1])), "goError" #走不了
             if self.table[loc_togo[0]][loc_togo[1]]!=0:
                 ate = self.table[loc_togo[0]][loc_togo[1]] #被吃棋子id
             else:
                 ate = 0
-            self.table[loc_togo[0]][loc_togo[1]] = arg[2] #走到
+            self.table[loc_togo[0]][loc_togo[1]] = piece #走到
             self.table[arg[0]][arg[1]] = 0 #清楚痕迹
+            self.record.append((arg,loc_togo,ate))
+            self.turn = self.turn * -1
             return ate
         except AssertionError as e:
-            print(f"Error occurred: {e}")
+            #print(f"Error occurred: {e}")
             return f"Error occurred: {e}"
+        
+    def withdraw(self):
+        try:
+            lastrecord = self.record.pop()
+            self.table[lastrecord[0][0]][lastrecord[0][1]] = lastrecord[0][2]
+            self.table[lastrecord[1][0]][lastrecord[1][1]] = lastrecord[2]
+            self.turn = self.turn * -1
+            return True
+        except:
+            print("No more record")
+            return False
+
     def win(self) -> int:
         #1黑胜，-1红胜，0没结束
         bjiang = 5
@@ -331,6 +376,16 @@ class Table:
         else:
             return 0
         
+    def waittingtowin(self):
+        allcango = self.AllCanGo()
+        for i,j,kind,where in allcango:
+            for loc in where:
+                if self.table[loc[0]][loc[1]] == -5*self.turn:
+                    return self.turn
+        #没找到
+        return 0
+                
+
     def ifCollision(self,circle,radius,mouseplace):
         #print(circle)
         #print(mouseplace)
@@ -363,13 +418,17 @@ class Table:
                                     self.go((self.waiti,self.waitj,self.table[self.waiti][self.waitj]),(i,j))
                                     self.waittingtogo = 0
                                     self.allCollision[i][j]=0
-                                    self.turn = self.turn * -1
+                                    #self.turn = self.turn * -1 加到go里面了
                                 else:
                                     self.allCollision[i][j]=0
                                     self.waittingtogo = 0
                     if flag==0:
                         #一个都没有
                         self.waittingtogo = 0
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_z:
+                    self.withdraw()
+                    
         # 填充背景颜色
         screen.fill((255, 255, 255))  # 白色背景
 
@@ -404,7 +463,7 @@ class Table:
 
         # 更新屏幕
         pygame.display.flip()
-        self.whowin = self.win()
+        self.whowin = self.waittingtowin()
         if self.whowin != 0:
             return False
         return True

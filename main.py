@@ -1,8 +1,13 @@
 import Table
 import pygame
 import sys
+import random
+
 table1 = Table.Table()
-table1.initial(1)
+
+usercolor = 1 if random.random()>0.5 else -1
+
+table1.initial(usercolor)
 
 
 # 初始化pygame
